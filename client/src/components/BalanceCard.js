@@ -14,3 +14,4 @@ export default function BalanceCard({ title, amount, theme = 'blue' }) {
     </div>
   );
 }
+

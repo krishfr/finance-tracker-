@@ -13,29 +13,32 @@ function App() {
   const [sortBy, setSortBy] = useState("date");
   const [selectedCategory, setSelectedCategory] = useState("all");
 
-  const fetchTransactions = async () => {
-    try {
-      const res = await axios.get('http://localhost:5000/api/transactions');
-      const data = res.data.map(tx => ({
-        ...tx,
-        amount: Number(tx.amount)
-      }));
-      setTransactions(data);
-    } catch (error) {
-      console.error('Failed to fetch transactions', error);
-    }
-  };
+  // ✅ Get API base URL from environment variable
+ const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+
+const fetchTransactions = async () => {
+  try {
+    const res = await axios.get(`${API_URL}/api/transactions`);
+    const data = res.data.map(tx => ({
+      ...tx,
+      amount: Number(tx.amount)
+    }));
+    setTransactions(data);
+  } catch (error) {
+    console.error('Failed to fetch transactions', error);
+  }
+};
+
 
   useEffect(() => {
     fetchTransactions();
   }, []);
 
   const filteredTransactions = transactions.filter((txn) => {
-  const matchesType = filterType === 'all' || txn.type.toLowerCase() === filterType;
-  const matchesCategory = selectedCategory === 'all' || txn.category.toLowerCase() === selectedCategory;
-  return matchesType && matchesCategory;
-});
-
+    const matchesType = filterType === 'all' || txn.type.toLowerCase() === filterType;
+    const matchesCategory = selectedCategory === 'all' || txn.category.toLowerCase() === selectedCategory;
+    return matchesType && matchesCategory;
+  });
 
   const sortTransactions = [...filteredTransactions].sort((a, b) => {
     if (sortBy === "amount") {
@@ -125,22 +128,22 @@ function App() {
           </select>
         </div>
 
-<div style={{ margin: '1rem 0' }}>
-  <label htmlFor="category">Category: </label>
-  <select
-    id="category"
-    value={selectedCategory}
-    onChange={(e) => setSelectedCategory(e.target.value)}
-  >
-    <option value="all">All</option>
-    <option value="salary">Salary</option>
-    <option value="freelance">Freelance</option>
-    <option value="food">Food</option>
-    <option value="rent">Rent</option>
-    <option value="groceries">Groceries</option>
-    <option value="transport">Transport</option>
-  </select>
-</div>
+        <div style={{ margin: '1rem 0' }}>
+          <label htmlFor="category">Category: </label>
+          <select
+            id="category"
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+          >
+            <option value="all">All</option>
+            <option value="salary">Salary</option>
+            <option value="freelance">Freelance</option>
+            <option value="food">Food</option>
+            <option value="rent">Rent</option>
+            <option value="groceries">Groceries</option>
+            <option value="transport">Transport</option>
+          </select>
+        </div>
 
         <TransactionList
           transactions={sortTransactions}
@@ -148,8 +151,6 @@ function App() {
         />
 
         <MonthlyBarChart monthlyData={monthlyData} />
-
-        
         <CategoryChart transactions={transactions} />
       </div>
     </div>

@@ -5,16 +5,20 @@ export default function TransactionList({ transactions, fetchTransactions }) {
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure want to delete this transaction?')) {
       try {
-        await axios.delete(`http://localhost:5000/api/transactions/${id}`);
-        await fetchTransactions();
-      } catch (error) {
-        console.error("Error deleting transaction:", error);
-      }
-    }
+  const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+
+  await axios.delete(`${API_URL}/api/transactions/${id}`);
+  await fetchTransactions();
+} catch (error) {
+  console.error("Error deleting transaction:", error);
+}
+
   };
+}
 
   const formatDate = (dateString) => {
     if (!dateString) return '';
+
     const date = new Date(dateString);
     return date.toLocaleDateString('en-GB', {
       day: 'numeric',

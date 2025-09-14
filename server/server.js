@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 
 const app = express();
 
+
 dotenv.config();
 
 app.use(cors());
@@ -58,7 +59,4 @@ app.get("/", (req,res)=>{
     res.json({ message: "Backend Works!"});
 });
 
-app.listen(5000, ()=>{
-    console.log("Server running on http://localhost:5000");
-    
-})
+module.exports = app;

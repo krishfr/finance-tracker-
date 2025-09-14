@@ -10,15 +10,27 @@ const AddTransaction = ({ fetchTransactions }) => {
     e.preventDefault();
     const numericAmount = type === 'expense' ? -Math.abs(Number(amount)) : Number(amount);
     try {
-      await axios.post('http://localhost:5000/api/transactions', { type, amount: numericAmount, category });
-      alert('Transaction added successfully!');
-      setAmount('');
-      setCategory('Salary');
-      await fetchTransactions();
-    } catch (error) {
-      console.error('Error adding transaction:', error);
-    }
+  const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+
+  await axios.post(`${API_URL}/api/transactions`, { 
+    type, 
+    amount: numericAmount, 
+    category 
+  });
+
+  alert('Transaction added successfully!');
+  setAmount('');
+  setCategory('Salary');
+  await fetchTransactions();
+} catch (error) {
+  console.error('Error adding transaction:', error);
+}
+
   };
+
+
+
+
 
   return (
     <div className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white p-4 rounded shadow">
