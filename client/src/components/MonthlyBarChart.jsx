@@ -1,28 +1,13 @@
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-} from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend
-);
+// 🛑 The registration block has been removed from here.
 
 const MonthlyBarChart = ({ monthlyData }) => {
   if (!monthlyData || !Array.isArray(monthlyData)) {
-    return <div>Loading monthly data...</div>;
+    return <div className="p-4 text-gray-500 dark:text-gray-400">Loading monthly data...</div>;
   }
 
+  // NOTE: This data preparation logic is fine, but for performance, should be moved to useMemo in App.js.
   const labels = monthlyData.map((item) => item.month);
   const incomeData = monthlyData.map((item) => item.income);
   const expenseData = monthlyData.map((item) => item.expense);
@@ -67,12 +52,10 @@ const MonthlyBarChart = ({ monthlyData }) => {
 
   return (
     <div className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white p-4 rounded shadow">
-    <div className="my-6">
-      <h2 className="text-xl font-semibold mb-4 text-gray-700">📊 Monthly Income vs Expense</h2>
+      <h2 className="text-xl font-semibold mb-4 text-gray-700 dark:text-gray-300">📊 Monthly Income vs Expense</h2>
       <div className="h-72">
         <Bar data={data} options={options} />
       </div>
-    </div>
     </div>
   );
 };

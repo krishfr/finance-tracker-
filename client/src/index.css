@@ -1,3 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+/* CRITICAL FIX: Ensure the root HTML elements have no inherent margin/padding */
+@layer base {
+    html, body, #root {
+        height: 100%; /* Ensure they fill the viewport precisely */
+        margin: 0;
+        padding: 0;
+        /* Hides horizontal scrollbar which can sometimes cause minor vertical issues */
+        overflow-x: hidden; 
+    }
+}
