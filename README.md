@@ -2,7 +2,7 @@
 
 🧩 About
 A full-stack web application to track income and expenses in a simple and structured way.
-Users can record transactions, view summaries, and manage financial data securely.
+Users can securely record transactions, view summaries, and manage financial data.
 
 ✨ Key Features
 • 🔐 Secure authentication using JWT
