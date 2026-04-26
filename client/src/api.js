@@ -15,22 +15,30 @@ export function clearToken() {
   localStorage.removeItem("token");
 }
 
-export async function apiRequest(endpoint, options = {}) {
-  const token = getToken();
+export async function apiRequest(path, options = {}) {
+  const token = localStorage.getItem("token");
 
-  const res = await fetch(`${API_URL}${endpoint}`, {
+  const res = await fetch(API_URL + path, {
+    ...options,
     headers: {
       "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...(token && { Authorization: `Bearer ${token}` }),
     },
-    ...options,
   });
 
-  const data = await res.json();
+  const text = await res.text();
+
+  let data;
+  try {
+    data = JSON.parse(text);
+  } catch {
+    throw new Error("Server returned HTML. Check API URL.");
+  }
 
   if (!res.ok) {
-    throw new Error(data.message || "API error");
+    throw new Error(data.message || "Request failed");
   }
 
   return data;
 }
+
