@@ -1,0 +1,27 @@
+CREATE TABLE IF NOT EXISTS users (
+  id INT NOT NULL AUTO_INCREMENT,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(150) NOT NULL,
+  password_hash VARCHAR(255) NOT NULL,
+  role ENUM('USER','ADMIN') DEFAULT 'USER',
+  created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  UNIQUE KEY email (email)
+);
+
+CREATE TABLE IF NOT EXISTS transactions (
+  id INT NOT NULL AUTO_INCREMENT,
+  user_id INT DEFAULT NULL,
+  type ENUM('income','expense') NOT NULL,
+  amount DECIMAL(10,2) NOT NULL,
+  category VARCHAR(255) NOT NULL,
+  date TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+  description TEXT,
+  created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  KEY fk_transactions_user (user_id),
+  CONSTRAINT fk_transactions_user
+    FOREIGN KEY (user_id)
+    REFERENCES users(id)
+    ON DELETE CASCADE
+);

@@ -15,13 +15,19 @@ app.use(cors());
 app.use(express.json());
 
 // DB
-const db = mysql.createPool({
-  host: "localhost",
-  user: "root",
-  password: process.env.DB_PASSWORD,
-  database: "finance_tracker",
-});
+// const db = mysql.createPool({
+//   host: "localhost",
+//   user: "root",
+//   password: process.env.DB_PASSWORD,
+//   database: "finance_tracker",
+// });
 
+const db = mysql.createPool({
+  host: process.env.DB_HOST || "localhost",
+  user: process.env.DB_USER || "root",
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME || "finance_tracker",
+});
 // Auth middleware
 const authMiddleware = (req, res, next) => {
   const authHeader = req.headers.authorization;
@@ -172,11 +178,53 @@ app.post("/api/transactions", authMiddleware, async (req, res) => {
 }
 });
 
+// DELETE TRANSACTION
+app.delete("/api/transactions/:id", authMiddleware, async (req, res) => {
+  try {
+    const transactionId = req.params.id;
+
+    const [result] = await db.promise().query(
+      "DELETE FROM transactions WHERE id = ? AND user_id = ?",
+      [transactionId, req.user.id]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({
+        message: "Transaction not found"
+      });
+    }
+
+    res.json({
+      message: "Transaction deleted successfully"
+    });
+
+  } catch (error) {
+
+    console.error("DELETE /api/transactions ERROR:", error);
+
+    res.status(500).json({
+      message: "Failed to delete transaction",
+      error: error.message
+    });
+  }
+});
+
 // START
+// db.query("SELECT 1", (err) => {
+//   if (err) {
+//     console.log("DB failed");
+//   } else {
+//     app.listen(PORT, () => {
+//       console.log(`Server running on ${PORT}`);
+//     });
+//   }
+// });
 db.query("SELECT 1", (err) => {
   if (err) {
-    console.log("DB failed");
+    console.error("DB FAILED:", err);
   } else {
+    console.log("DB CONNECTED");
+
     app.listen(PORT, () => {
       console.log(`Server running on ${PORT}`);
     });
